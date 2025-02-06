@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relaciones entre Personas</title>
+    <link rel="stylesheet" href="css/Style.css">
+    <script src="js/BackGround.js" defer></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">FuturaCorp</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#register">Registrar Persona</a></li>
+                <li><a href="#relationship">Registrar Relación</a></li>
+                <li><a href="#reports">Reportes</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container" id="home">
+        <h1>Bienvenido a FuturaCorp</h1>
+    </div>
+    <div class="container" id="register">
+        <h2>Registro de Personas</h2>
+        <button class="accordion">Formulario de Registro</button>
+        <div class="panel">
+            <form id="person-form">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="nickname">Nickname:</label>
+                <input type="text" id="nickname" name="nickname" required>
+                
+                <label for="email">Correo:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="city">Ciudad:</label>
+                <input type="text" id="city" name="city" required>
+                
+                <label for="country">País:</label>
+                <input type="text" id="country" name="country" required>
+                
+                <button type="submit">Registrar Persona</button>
+            </form>
+        </div>
+        <button class="accordion">Personas Registradas</button>
+        <div class="panel" id="persons-list">
+            <ul id="person-list">
+                <!-- Lista de personas registradas aparecerá aquí -->
+            </ul>
+        </div>
+    </div>
+    <div class="container" id="relationship">
+        <h2>Registro de Relaciones</h2>
+        <button class="accordion">Formulario de Registro</button>
+        <div class="panel">
+            <form id="relationship-form">
+                <label for="person1">Persona 1:</label>
+                <input type="text" id="person1" name="person1" required>
+                
+                <label for="person2">Persona 2:</label>
+                <input type="text" id="person2" name="person2" required>
+                
+                <label for="type">Tipo de Relación:</label>
+                <select id="type" name="type" required>
+                    <option value="amigos">Amigos</option>
+                    <option value="familia">Familia</option>
+                    <option value="trabajo">Trabajo</option>
+                </select>
+                
+                <label for="frequency">Frecuencia:</label>
+                <input type="text" id="frequency" name="frequency" required>
+                
+                <label for="importance">Importancia:</label>
+                <input type="text" id="importance" name="importance" required>
+                
+                <button type="submit">Registrar Relación</button>
+            </form>
+        </div>
+        <button class="accordion">Relaciones Registradas</button>
+        <div class="panel" id="relationships-list">
+            <ul id="relationship-list">
+                <!-- Lista de relaciones registradas aparecerá aquí -->
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
