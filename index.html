@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relaciones entre Personas</title>
     <link rel="stylesheet" href="Style.css">
-    <script src="BackGround.js" defer></script>
+    <script src="https://unpkg.com/neo4j-driver@4.4.3/lib/browser/neo4j-web.min.js"></script>
+</head>
 </head>
 <body>
     <header class="navbar">
@@ -47,9 +49,7 @@
         </div>
         <button class="accordion">Personas Registradas</button>
         <div class="panel" id="persons-list">
-            <ul id="person-list">
-                <!-- Lista de personas registradas aparecerá aquí -->
-            </ul>
+            <!-- Lista de personas registradas aparecerá aquí -->
         </div>
     </div>
     <div class="container" id="relationship">
@@ -59,32 +59,32 @@
             <form id="relationship-form">
                 <label for="person1">Persona 1:</label>
                 <input type="text" id="person1" name="person1" required>
-                
+    
                 <label for="person2">Persona 2:</label>
                 <input type="text" id="person2" name="person2" required>
-                
-                <label for="type">Tipo de Relación:</label>
+    
+                <label for="type">Tipo:</label>
                 <select id="type" name="type" required>
-                    <option value="amigos">Amigos</option>
-                    <option value="familia">Familia</option>
-                    <option value="trabajo">Trabajo</option>
+                    <option value="amistad">Amistad</option>
+                    <option value="familiar">Familiar</option>
+                    <option value="laboral">Laboral</option>
                 </select>
-                
+    
                 <label for="frequency">Frecuencia:</label>
                 <input type="text" id="frequency" name="frequency" required>
-                
+    
                 <label for="importance">Importancia:</label>
                 <input type="text" id="importance" name="importance" required>
-                
+    
                 <button type="submit">Registrar Relación</button>
             </form>
         </div>
         <button class="accordion">Relaciones Registradas</button>
         <div class="panel" id="relationships-list">
-            <ul id="relationship-list">
-                <!-- Lista de relaciones registradas aparecerá aquí -->
-            </ul>
+            <!-- Lista de relaciones registradas aparecerá aquí -->
         </div>
     </div>
+    <script src="database.js"></script>
+    <script src="BackGround.js"></script>
 </body>
 </html>
