@@ -157,6 +157,68 @@ function registerPerson(person) {
         console.error('Error al registrar persona:', error);
     });
 }
+function updatePersonList() {
+    const session = window.neo4jSession;
+    session.run('MATCH (p:Person) RETURN p')
+    .then(result => {
+        console.log(result);
+        const personsTableBody = document.querySelector('#persons-table tbody');
+        personsTableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevas filas
+        result.records.forEach(record => {
+            const person = record.get('p').properties;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${person.name}</td>
+                <td>${person.nickname}</td>
+                <td>${person.email}</td>
+                <td>${person.city}</td>
+                <td>${person.country}</td>
+            `;
+            console.log(person);    
+            personsTableBody.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error al obtener lista de personas:', error);
+    });
+}
+
+// Llama a updatePersonList cuando se hace clic en el botón "Personas Registradas"
+document.getElementById('llamarpersonas').addEventListener('click', function() {
+    console.log("ss");
+    updatePersonList();
+});
+
+function updateRelationshipList() {
+    const session = window.neo4jSession;
+    session.run('MATCH (a:Person)-[r:RELATIONSHIP]->(b:Person) RETURN a, r, b')
+    .then(result => {
+        const relationshipsTableBody = document.querySelector('#relationships-table tbody');
+        relationshipsTableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevas filas
+        result.records.forEach(record => {
+            const person1 = record.get('a').properties;
+            const relationship = record.get('r').properties;
+            const person2 = record.get('b').properties;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${person1.name}</td>
+                <td>${person2.name}</td>
+                <td>${relationship.type}</td>
+                <td>${relationship.frequency}</td>
+                <td>${relationship.importance}</td>
+            `;
+            relationshipsTableBody.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error al obtener lista de relaciones:', error);
+    });
+}
+
+// Llama a updateRelationshipList cuando se hace clic en el botón "Relaciones Registradas"
+document.querySelectorAll('.accordion')[3].addEventListener('click', function() {
+    updateRelationshipList();
+});
 
 
 // Funcionalidad de los acordeones

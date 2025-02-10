@@ -45,11 +45,25 @@
                 <button type="submit">Registrar Persona</button>
             </form>
         </div>
-        <button class="accordion">Personas Registradas</button>
+        <button class="accordion" id="llamarpersonas">Personas Registradas</button>
         <div class="panel" id="persons-list">
-            <!-- Lista de personas registradas aparecerá aquí -->
+            <table id="persons-table" class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Nickname</th>
+                        <th>Email</th>
+                        <th>Ciudad</th>
+                        <th>País</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Lista de personas registradas aparecerá aquí -->
+                </tbody>
+            </table>
         </div>
     </div>
+
     <div class="container" id="relationship">
         <h2>Registro de Relaciones</h2>
         <button class="accordion">Formulario de Registro</button>
@@ -83,8 +97,22 @@
         </div>
         <button class="accordion">Relaciones Registradas</button>
         <div class="panel" id="relationships-list">
-            <!-- Lista de relaciones registradas aparecerá aquí -->
+            <table id="relationships-table" class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Persona 1</th>
+                        <th>Persona 2</th>
+                        <th>Tipo</th>
+                        <th>Frecuencia</th>
+                        <th>Importancia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Lista de relaciones registradas aparecerá aquí -->
+                </tbody>
+            </table>
         </div>
+
     </div>
     <script src="database.js"></script>
     <script src="BackGround.js"></script>
