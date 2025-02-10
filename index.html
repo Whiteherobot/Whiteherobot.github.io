@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -46,21 +45,39 @@
                 <button type="submit">Registrar Persona</button>
             </form>
         </div>
-        <button class="accordion">Personas Registradas</button>
+        <button class="accordion" id="llamarpersonas">Personas Registradas</button>
         <div class="panel" id="persons-list">
-            <!-- Lista de personas registradas aparecerá aquí -->
+            <table id="persons-table" class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Nickname</th>
+                        <th>Email</th>
+                        <th>Ciudad</th>
+                        <th>País</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Lista de personas registradas aparecerá aquí -->
+                </tbody>
+            </table>
         </div>
     </div>
+
     <div class="container" id="relationship">
         <h2>Registro de Relaciones</h2>
         <button class="accordion">Formulario de Registro</button>
         <div class="panel">
             <form id="relationship-form">
                 <label for="person1">Persona 1:</label>
-                <input type="text" id="person1" name="person1" required>
+                <select id="person1" name="person1" required>
+                    <!-- Opciones se cargarán aquí dinámicamente -->
+                </select>
     
                 <label for="person2">Persona 2:</label>
-                <input type="text" id="person2" name="person2" required>
+                <select id="person2" name="person2" required>
+                    <!-- Opciones se cargarán aquí dinámicamente -->
+                </select>
     
                 <label for="type">Tipo:</label>
                 <select id="type" name="type" required>
@@ -80,8 +97,22 @@
         </div>
         <button class="accordion">Relaciones Registradas</button>
         <div class="panel" id="relationships-list">
-            <!-- Lista de relaciones registradas aparecerá aquí -->
+            <table id="relationships-table" class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Persona 1</th>
+                        <th>Persona 2</th>
+                        <th>Tipo</th>
+                        <th>Frecuencia</th>
+                        <th>Importancia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Lista de relaciones registradas aparecerá aquí -->
+                </tbody>
+            </table>
         </div>
+
     </div>
     <script src="database.js"></script>
     <script src="BackGround.js"></script>

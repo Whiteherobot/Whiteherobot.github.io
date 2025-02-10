@@ -120,3 +120,44 @@ button:hover {
 .panel.show {
     display: block;
 }
+
+
+/* Estilo de la tabla */
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: 'Arial', sans-serif;
+    width: 100%;
+    border: 1px solid #dddddd;
+}
+
+.styled-table thead tr {
+    background-color: #A682FF;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #000;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #000;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #000;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #A682FF;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
