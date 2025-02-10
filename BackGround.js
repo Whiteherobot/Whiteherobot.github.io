@@ -216,8 +216,81 @@ function updateRelationshipList() {
 }
 
 // Llama a updateRelationshipList cuando se hace clic en el botón "Relaciones Registradas"
-document.querySelectorAll('.accordion')[3].addEventListener('click', function() {
+document.getElementById('llamarrelaciones').addEventListener('click', function() {
     updateRelationshipList();
+});
+
+// Cargar opciones en los nuevos selectores
+function loadReportPersonOptions() {
+    const session = window.neo4jSession;
+    session.run('MATCH (p:Person) RETURN p')
+    .then(result => {
+        const selects = ['personA', 'personB', 'singlePerson'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '';
+            result.records.forEach(record => {
+                const person = record.get('p').properties;
+                const option = document.createElement('option');
+                option.value = person.name;
+                option.textContent = `${person.name} (${person.nickname})`;
+                select.appendChild(option);
+            });
+        });
+    })
+    .catch(error => {
+        console.error('Error al cargar opciones de personas:', error);
+    });
+}
+
+// Buscar persona en común
+document.getElementById('searchCommonPerson').addEventListener('click', function() {
+    const personA = document.getElementById('personA').value;
+    const personB = document.getElementById('personB').value;
+    const relationshipType = document.getElementById('relationshipType').value;
+    
+    const session = window.neo4jSession;
+    let query = `
+        MATCH (a:Person {name: $personA})-[r:RELATIONSHIP]-(common:Person)-[r2:RELATIONSHIP]-(b:Person {name: $personB})
+        WHERE $relationshipType = 'todos' OR r.type = $relationshipType
+        RETURN DISTINCT common
+    `;
+
+    session.run(query, { personA, personB, relationshipType })
+    .then(result => {
+        const commonPersonResult = document.getElementById('commonPersonName');
+        if (result.records.length > 0) {
+            commonPersonResult.textContent = result.records.map(record => record.get('common').properties.name).join(', ');
+        } else {
+            commonPersonResult.textContent = 'No hay personas en común.';
+        }
+    })
+    .catch(error => {
+        console.error('Error al buscar persona en común:', error);
+    });
+});
+
+// Contar relaciones de una persona
+document.getElementById('countRelationships').addEventListener('click', function() {
+    const singlePerson = document.getElementById('singlePerson').value;
+    
+    const session = window.neo4jSession;
+    session.run(`
+        MATCH (:Person {name: $singlePerson})-[r:RELATIONSHIP]-()
+        RETURN COUNT(r) AS totalRelaciones
+    `, { singlePerson })
+    .then(result => {
+        const count = result.records[0].get('totalRelaciones').low; // .low para enteros en Neo4j
+        document.getElementById('relationshipCount').textContent = count;
+    })
+    .catch(error => {
+        console.error('Error al contar relaciones:', error);
+    });
+});
+
+// Cargar las opciones al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    loadReportPersonOptions();
 });
 
 

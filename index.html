@@ -95,7 +95,7 @@
                 <button type="submit">Registrar Relación</button>
             </form>
         </div>
-        <button class="accordion">Relaciones Registradas</button>
+        <button class="accordion" id="llamarrelaciones">Relaciones Registradas</button>
         <div class="panel" id="relationships-list">
             <table id="relationships-table" class="styled-table">
                 <thead>
@@ -113,7 +113,56 @@
             </table>
         </div>
 
+        
+
     </div>
+    <div class="container" id="reports">
+        <h2>Reportes de Relaciones</h2>
+    
+        <div class="report-section">
+            <h3>Personas en Común</h3>
+            <label for="personA">Persona 1:</label>
+            <select id="personA" name="personA" required>
+                <!-- Opciones dinámicas -->
+            </select>
+    
+            <label for="personB">Persona 2:</label>
+            <select id="personB" name="personB" required>
+                <!-- Opciones dinámicas -->
+            </select>
+    
+            <label for="relationshipType">Tipo de Relación:</label>
+            <select id="relationshipType" name="relationshipType" required>
+                <option value="amistad">Amistad</option>
+                <option value="familiar">Familiar</option>
+                <option value="laboral">Laboral</option>
+                <option value="todos">Todos</option>
+            </select>
+    
+            <button id="searchCommonPerson">Buscar Persona en Común</button>
+    
+            <div id="commonPersonResult" class="result-box">
+                <h4>Persona en Común:</h4>
+                <p id="commonPersonName">-</p>
+            </div>
+        </div>
+    
+        <div class="report-section">
+            <h3>Relaciones de una Persona</h3>
+            <label for="singlePerson">Selecciona una Persona:</label>
+            <select id="singlePerson" name="singlePerson" required>
+                <!-- Opciones dinámicas -->
+            </select>
+    
+            <button id="countRelationships">Contar Relaciones</button>
+    
+            <div id="relationshipCountResult" class="result-box">
+                <h4>Total de Relaciones:</h4>
+                <p id="relationshipCount">0</p>
+            </div>
+        </div>
+    </div>
+    
     <script src="database.js"></script>
     <script src="BackGround.js"></script>
 </body>
