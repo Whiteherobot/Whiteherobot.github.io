@@ -1,6 +1,6 @@
 const neo4j = window.neo4j;
 
-const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '12345678'));
+const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'Vp60-h15jP'));
 const session = driver.session();
 
 function close() {
