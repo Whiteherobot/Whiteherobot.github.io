@@ -4,3 +4,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadPersonOptions();
 });
+
+
+
+// Cargar las opciones al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    loadReportPersonOptions();
+});
