@@ -104,6 +104,61 @@ function updateRelationshipList() {
     });
 }
 
+// Agregar esta función para cargar las opciones en los selectores de "Persona 1" y "Persona 2"
+function loadPersonOptions() {
+    const session = window.neo4jSession;
+    session.run('MATCH (p:Person) RETURN p')
+    .then(result => {
+        const person1Select = document.getElementById('person1');
+        const person2Select = document.getElementById('person2');
+        person1Select.innerHTML = '';
+        person2Select.innerHTML = '';
+        result.records.forEach(record => {
+            const person = record.get('p').properties;
+            const option1 = document.createElement('option');
+            const option2 = document.createElement('option');
+            option1.value = person.name;
+            option1.textContent = `${person.name} (${person.nickname})`;
+            option2.value = person.name;
+            option2.textContent = `${person.name} (${person.nickname})`;
+            person1Select.appendChild(option1);
+            person2Select.appendChild(option2);
+        });
+    })
+    .catch(error => {
+        console.error('Error al cargar opciones de personas:', error);
+    });
+}
+
+// Llamar a esta función al cargar la página para asegurar que los selectores estén actualizados
+document.addEventListener('DOMContentLoaded', function() {
+    loadPersonOptions();
+});
+
+// Llamar a esta función después de registrar una persona para actualizar los selectores
+function registerPerson(person) {
+    const session = window.neo4jSession;
+    session.run(
+        'CREATE (p:Person {name: $name, nickname: $nickname, email: $email, city: $city, country: $country}) RETURN p',
+        {
+            name: person.name,
+            nickname: person.nickname,
+            email: person.email,
+            city: person.city,
+            country: person.country
+        }
+    )
+    .then(result => {
+        console.log('Persona registrada:', result.records[0].get('p'));
+        updatePersonList();
+        loadPersonOptions(); // Cargar opciones después de registrar una persona
+    })
+    .catch(error => {
+        console.error('Error al registrar persona:', error);
+    });
+}
+
+
 // Funcionalidad de los acordeones
 const accordions = document.getElementsByClassName('accordion');
 for (let i = 0; i < accordions.length; i++) {

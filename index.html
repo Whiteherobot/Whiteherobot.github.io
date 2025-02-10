@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +6,6 @@
     <title>Relaciones entre Personas</title>
     <link rel="stylesheet" href="Style.css">
     <script src="https://unpkg.com/neo4j-driver@4.4.3/lib/browser/neo4j-web.min.js"></script>
-</head>
 </head>
 <body>
     <header class="navbar">
@@ -58,10 +56,14 @@
         <div class="panel">
             <form id="relationship-form">
                 <label for="person1">Persona 1:</label>
-                <input type="text" id="person1" name="person1" required>
+                <select id="person1" name="person1" required>
+                    <!-- Opciones se cargarán aquí dinámicamente -->
+                </select>
     
                 <label for="person2">Persona 2:</label>
-                <input type="text" id="person2" name="person2" required>
+                <select id="person2" name="person2" required>
+                    <!-- Opciones se cargarán aquí dinámicamente -->
+                </select>
     
                 <label for="type">Tipo:</label>
                 <select id="type" name="type" required>
