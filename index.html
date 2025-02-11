@@ -55,6 +55,7 @@
                         <th>Email</th>
                         <th>Ciudad</th>
                         <th>País</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,6 +63,8 @@
                 </tbody>
             </table>
         </div>
+        
+        
     </div>
 
     <div class="container" id="relationship">
@@ -105,6 +108,7 @@
                         <th>Tipo</th>
                         <th>Frecuencia</th>
                         <th>Importancia</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,63 +116,56 @@
                 </tbody>
             </table>
         </div>
-
         
 
     </div>
-    <div class="container" id="reports">
-        <h2>Reportes de Relaciones</h2>
-    
-        <div class="report-section">
-            <h3>Personas en Común</h3>
-            <label for="personA">Persona 1:</label>
-            <select id="personA" name="personA" required>
-                <!-- Opciones dinámicas -->
+
+    <div class="container" id="relationship-query">
+        <h2>Consultar Relaciones</h2>
+        <form id="relationship-query-form">
+            <label for="person1-query-select">Persona 1:</label>
+            <select id="person1-query-select" name="person1">
+                <!-- Opciones se cargarán aquí dinámicamente -->
             </select>
     
-            <label for="personB">Persona 2:</label>
-            <select id="personB" name="personB" required>
-                <!-- Opciones dinámicas -->
+            <label for="person2-query-select">Persona 2 (opcional):</label>
+            <select id="person2-query-select" name="person2">
+                <!-- Opciones se cargarán aquí dinámicamente -->
             </select>
     
-            <label for="relationshipType">Tipo de Relación:</label>
-            <select id="relationshipType" name="relationshipType" required>
+            <label for="relationship-type-query">Tipo de Relación (opcional):</label>
+            <select id="relationship-type-query" name="type">
+                <option value="">Seleccione un tipo</option>
                 <option value="amistad">Amistad</option>
                 <option value="familiar">Familiar</option>
                 <option value="laboral">Laboral</option>
-                <option value="todos">Todos</option>
             </select>
     
-            <button id="searchCommonPerson">Buscar Persona en Común</button>
-    
-            <div id="commonPersonResult" class="result-box">
-                <h4>Persona en Común:</h4>
-                <p id="commonPersonName">-</p>
-            </div>
-        </div>
-    
-        <div class="report-section">
-            <h3>Relaciones de una Persona</h3>
-            <label for="singlePerson">Selecciona una Persona:</label>
-            <select id="singlePerson" name="singlePerson" required>
-                <!-- Opciones dinámicas -->
-            </select>
-    
-            <button id="countRelationships">Contar Relaciones</button>
-    
-            <div id="relationshipCountResult" class="result-box">
-                <h4>Total de Relaciones:</h4>
-                <p id="relationshipCount">0</p>
-            </div>
+            <button type="submit">Consultar</button>
+        </form>
+        <div id="query-result">
+            <!-- Resultado aparecerá aquí -->
         </div>
     </div>
     
     
-    <script src="visualFunctions.js"></script>
+    <div class="container" id="most-relations">
+        <h2>Personas con Más Relaciones</h2>
+        <button id="show-relations">Mostrar Relaciones</button>
+        <table id="most-relations-table" class="styled-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad de Relaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Lista de personas con más relaciones aparecerá aquí -->
+            </tbody>
+        </table>
+    </div>
+    
     <script src="database.js"></script>
-    <script src="predefined-functions.js"></script>
-    <script src="onInit.js"></script>
-    <script src="Variables.js"></script>
     <script src="BackGround.js"></script>
 </body>
 </html>
