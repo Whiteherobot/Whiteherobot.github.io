@@ -7,19 +7,23 @@ document.getElementById('person-form').addEventListener('submit', function(event
         city: document.getElementById('city').value,
         country: document.getElementById('country').value
     };
-    registerPerson(person);
-});
 
-document.getElementById('relationship-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const relationship = {
-        person1: document.getElementById('person1').value,
-        person2: document.getElementById('person2').value,
-        type: document.getElementById('type').value,
-        frequency: document.getElementById('frequency').value,
-        importance: document.getElementById('importance').value
-    };
-    registerRelationship(relationship);
+    const session = window.neo4jSession;
+    session.run(
+        'MATCH (p:Person {nickname: $nickname}) RETURN p',
+        { nickname: person.nickname }
+    )
+    .then(result => {
+        if (result.records.length > 0) {
+            alert('Este nickname ya está registrado.');
+            return;
+        }
+
+        registerPerson(person);
+    })
+    .catch(error => {
+        console.error('Error al verificar existencia de nickname:', error);
+    });
 });
 
 function registerPerson(person) {
@@ -37,11 +41,31 @@ function registerPerson(person) {
     .then(result => {
         console.log('Persona registrada:', result.records[0].get('p'));
         updatePersonList();
+        loadPersonOptions(); // Actualizar opciones de los selectores
+
+        // Limpiar los campos del formulario
+        document.getElementById('person-form').reset();
     })
     .catch(error => {
         console.error('Error al registrar persona:', error);
     });
 }
+
+
+document.getElementById('relationship-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const relationship = {
+        person1: document.getElementById('person1').value,
+        person2: document.getElementById('person2').value,
+        type: document.getElementById('type').value,
+        frequency: document.getElementById('frequency').value,
+        importance: document.getElementById('importance').value
+    };
+    registerRelationship(relationship);
+});
+
+
+
 
 // Función para registrar una relación (añadir verificación para evitar relaciones consigo mismo)
 function registerRelationship(relationship) {
@@ -51,31 +75,65 @@ function registerRelationship(relationship) {
     }
 
     const session = window.neo4jSession;
-    session.writeTransaction(tx => {
-        return tx.run(
-            'MATCH (a:Person {name: $person1}), (b:Person {name: $person2}) ' +
-            'CREATE (a)-[r1:RELATIONSHIP {type: $type, frequency: $frequency, importance: $importance}]->(b), ' +
-            '(b)-[r2:RELATIONSHIP {type: $type, frequency: $frequency, importance: $importance}]->(a) ' +
-            'RETURN r1, r2',
-            {
-                person1: relationship.person1,
-                person2: relationship.person2,
-                type: relationship.type,
-                frequency: relationship.frequency,
-                importance: relationship.importance
-            }
-        );
-    })
+    session.run(
+        'MATCH (a:Person {name: $person1})-[r:RELATIONSHIP {type: $type}]->(b:Person {name: $person2}) RETURN r',
+        {
+            person1: relationship.person1,
+            person2: relationship.person2,
+            type: relationship.type
+        }
+    )
     .then(result => {
-        console.log('Relación registrada:', result.records[0].get('r1'), result.records[0].get('r2'));
-        updateRelationshipList();
+        if (result.records.length > 0) {
+            alert('Esta relación ya existe.');
+            return;
+        }
+
+        session.writeTransaction(tx => {
+            return tx.run(
+                'MATCH (a:Person {name: $person1}), (b:Person {name: $person2}) ' +
+                'CREATE (a)-[r:RELATIONSHIP {type: $type, frequency: $frequency, importance: $importance}]->(b) ' +
+                'RETURN r',
+                {
+                    person1: relationship.person1,
+                    person2: relationship.person2,
+                    type: relationship.type,
+                    frequency: relationship.frequency,
+                    importance: relationship.importance
+                }
+            );
+        })
+        .then(result => {
+            console.log('Relación registrada:', result.records[0].get('r'));
+            updateRelationshipList();
+
+            // Limpiar los campos del formulario
+            document.getElementById('relationship-form').reset();
+        })
+        .catch(error => {
+            console.error('Error al registrar relación:', error);
+        });
     })
     .catch(error => {
-        console.error('Error al registrar relación:', error);
+        console.error('Error al verificar existencia de relación:', error);
     });
 }
 
-
+function deletePerson(name, nickname) {
+    const session = window.neo4jSession;
+    session.run(
+        'MATCH (p:Person {name: $name, nickname: $nickname}) DELETE p',
+        { name: name, nickname: nickname }
+    )
+    .then(result => {
+        console.log('Persona eliminada:', result);
+        updatePersonList(); // Actualizar la lista de personas
+        loadPersonOptions(); // Actualizar opciones de los selectores
+    })
+    .catch(error => {
+        console.error('Error al eliminar persona:', error);
+    });
+}
 
 function updatePersonList() {
     const session = window.neo4jSession;
@@ -88,6 +146,14 @@ function updatePersonList() {
             const personItem = document.createElement('div');
             personItem.textContent = `${person.name} (${person.nickname}) - ${person.email}, ${person.city}, ${person.country}`;
             personsList.appendChild(personItem);
+        });
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const name = this.getAttribute('data-name');
+                const nickname = this.getAttribute('data-nickname');
+                deletePerson(name, nickname);
+            });
         });
     })
     .catch(error => {
