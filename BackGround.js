@@ -26,30 +26,6 @@ document.getElementById('person-form').addEventListener('submit', function(event
     });
 });
 
-function registerPerson(person) {
-    const session = window.neo4jSession;
-    session.run(
-        'CREATE (p:Person {name: $name, nickname: $nickname, email: $email, city: $city, country: $country}) RETURN p',
-        {
-            name: person.name,
-            nickname: person.nickname,
-            email: person.email,
-            city: person.city,
-            country: person.country
-        }
-    )
-    .then(result => {
-        console.log('Persona registrada:', result.records[0].get('p'));
-        updatePersonList();
-        loadPersonOptions(); // Actualizar opciones de los selectores
-
-        // Limpiar los campos del formulario
-        document.getElementById('person-form').reset();
-    })
-    .catch(error => {
-        console.error('Error al registrar persona:', error);
-    });
-}
 
 
 document.getElementById('relationship-form').addEventListener('submit', function(event) {
@@ -121,10 +97,12 @@ function registerRelationship(relationship) {
 
 function deletePerson(name, nickname) {
     const session = window.neo4jSession;
-    session.run(
-        'MATCH (p:Person {name: $name, nickname: $nickname}) DELETE p',
-        { name: name, nickname: nickname }
-    )
+    session.writeTransaction(tx => {
+        return tx.run(
+            'MATCH (p:Person {name: $name, nickname: $nickname}) DELETE p',
+            { name: name, nickname: nickname }
+        );
+    })
     .then(result => {
         console.log('Persona eliminada:', result);
         updatePersonList(); // Actualizar la lista de personas
@@ -134,6 +112,7 @@ function deletePerson(name, nickname) {
         console.error('Error al eliminar persona:', error);
     });
 }
+
 
 function updatePersonList() {
     const session = window.neo4jSession;
@@ -161,25 +140,7 @@ function updatePersonList() {
     });
 }
 
-function updateRelationshipList() {
-    const session = window.neo4jSession;
-    session.run('MATCH (a:Person)-[r:RELATIONSHIP]->(b:Person) RETURN a, r, b')
-    .then(result => {
-        const relationshipsList = document.getElementById('relationships-list');
-        relationshipsList.innerHTML = '';
-        result.records.forEach(record => {
-            const person1 = record.get('a').properties;
-            const relationship = record.get('r').properties;
-            const person2 = record.get('b').properties;
-            const relationshipItem = document.createElement('div');
-            relationshipItem.textContent = `${person1.name} & ${person2.name} - ${relationship.type}, Frecuencia: ${relationship.frequency}, Importancia: ${relationship.importance}`;
-            relationshipsList.appendChild(relationshipItem);
-        });
-    })
-    .catch(error => {
-        console.error('Error al obtener lista de relaciones:', error);
-    });
-}
+
 
 // Agregar esta función para cargar las opciones en los selectores de "Persona 1" y "Persona 2"
 
@@ -201,6 +162,7 @@ function registerPerson(person) {
         console.log('Persona registrada:', result.records[0].get('p'));
         updatePersonList();
         loadPersonOptions(); // Cargar opciones después de registrar una persona
+        document.getElementById('person-form').reset();
     })
     .catch(error => {
         console.error('Error al registrar persona:', error);
@@ -242,23 +204,6 @@ function updatePersonList() {
     });
 }
 
-
-
-// Función para eliminar una persona (modificar la consulta para incluir nickname)
-function deletePerson(name, nickname) {
-    const session = window.neo4jSession;
-    session.run(
-        'MATCH (p:Person {name: $name, nickname: $nickname}) DELETE p',
-        { name: name, nickname: nickname }
-    )
-    .then(result => {
-        console.log('Persona eliminada:', result);
-        updatePersonList(); // Actualizar la lista de personas
-    })
-    .catch(error => {
-        console.error('Error al eliminar persona:', error);
-    });
-}
 
 // Llama a updatePersonList cuando se hace clic en el botón "Personas Registradas"
 document.getElementById('llamarpersonas').addEventListener('click', function() {
@@ -336,49 +281,52 @@ document.getElementById("llamarrelaciones").addEventListener('click', function()
 // Función para cargar las opciones en todos los selectores de personas
 function loadPersonOptions() {
     const session = window.neo4jSession;
-    session.run('MATCH (p:Person) RETURN p')
-    .then(result => {
-        // Selectores para el formulario de relaciones
-        const person1Select = document.getElementById('person1');
-        const person2Select = document.getElementById('person2');
+    session.readTransaction(tx => {
+        return tx.run('MATCH (p:Person) RETURN p')
+        .then(result => {
+            // Selectores para el formulario de relaciones
+            const person1Select = document.getElementById('person1');
+            const person2Select = document.getElementById('person2');
 
-        // Selectores para el formulario de consulta de relaciones
-        const person1QuerySelect = document.getElementById('person1-query-select');
-        const person2QuerySelect = document.getElementById('person2-query-select');
+            // Selectores para el formulario de consulta de relaciones
+            const person1QuerySelect = document.getElementById('person1-query-select');
+            const person2QuerySelect = document.getElementById('person2-query-select');
 
-        // Limpia los selectores antes de agregar nuevas opciones
-        if (person1Select) person1Select.innerHTML = '<option value="">Seleccione una persona</option>';
-        if (person2Select) person2Select.innerHTML = '<option value="">Seleccione una persona</option>';
-        if (person1QuerySelect) person1QuerySelect.innerHTML = '<option value="">Seleccione una persona</option>';
-        if (person2QuerySelect) person2QuerySelect.innerHTML = '<option value="">Seleccione una persona</option>';
+            // Limpia los selectores antes de agregar nuevas opciones
+            if (person1Select) person1Select.innerHTML = '<option value="">Seleccione una persona</option>';
+            if (person2Select) person2Select.innerHTML = '<option value="">Seleccione una persona</option>';
+            if (person1QuerySelect) person1QuerySelect.innerHTML = '<option value="">Seleccione una persona</option>';
+            if (person2QuerySelect) person2QuerySelect.innerHTML = '<option value="">Seleccione una persona</option>';
 
-        // Añade opciones a los selectores
-        result.records.forEach(record => {
-            const person = record.get('p').properties;
-            const option1 = document.createElement('option');
-            const option2 = document.createElement('option');
-            const optionQuery1 = document.createElement('option');
-            const optionQuery2 = document.createElement('option');
-            option1.value = person.name;
-            option1.textContent = `${person.name} (${person.nickname})`;
-            option2.value = person.name;
-            option2.textContent = `${person.name} (${person.nickname})`;
-            optionQuery1.value = person.name;
-            optionQuery1.textContent = `${person.name} (${person.nickname})`;
-            optionQuery2.value = person.name;
-            optionQuery2.textContent = `${person.name} (${person.nickname})`;
+            // Añade opciones a los selectores
+            result.records.forEach(record => {
+                const person = record.get('p').properties;
+                const option1 = document.createElement('option');
+                const option2 = document.createElement('option');
+                const optionQuery1 = document.createElement('option');
+                const optionQuery2 = document.createElement('option');
+                option1.value = person.name;
+                option1.textContent = `${person.name} (${person.nickname})`;
+                option2.value = person.name;
+                option2.textContent = `${person.name} (${person.nickname})`;
+                optionQuery1.value = person.name;
+                optionQuery1.textContent = `${person.name} (${person.nickname})`;
+                optionQuery2.value = person.name;
+                optionQuery2.textContent = `${person.name} (${person.nickname})`;
 
-            // Añadir opciones a los selectores si existen
-            if (person1Select) person1Select.appendChild(option1);
-            if (person2Select) person2Select.appendChild(option2);
-            if (person1QuerySelect) person1QuerySelect.appendChild(optionQuery1);
-            if (person2QuerySelect) person2QuerySelect.appendChild(optionQuery2);
+                // Añadir opciones a los selectores si existen
+                if (person1Select) person1Select.appendChild(option1);
+                if (person2Select) person2Select.appendChild(option2);
+                if (person1QuerySelect) person1QuerySelect.appendChild(optionQuery1);
+                if (person2QuerySelect) person2QuerySelect.appendChild(optionQuery2);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar opciones de personas:', error);
         });
-    })
-    .catch(error => {
-        console.error('Error al cargar opciones de personas:', error);
     });
 }
+
 
 // Llamar a loadPersonOptions al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
@@ -500,3 +448,5 @@ for (let i = 0; i < accordions.length; i++) {
         }
     });
 }
+
+
